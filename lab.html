@@ -1,0 +1,580 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Quiet Profile Lab</title>
+
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <style type="text/css">
+        @media (min-width: 992px) {
+            .instrument-panel {
+                position: fixed;
+                top: 25px;
+                right: 0;
+            }
+        }
+    </style>
+    <script src="javascripts/scale.fix.js"></script>
+    <script type="text/javascript" src="javascripts/quiet.js"></script>
+    <script type="text/javascript" src="javascripts/quiet-init.js"></script>
+    <script type="text/javascript" src="javascripts/lab.js"></script>
+    <script async type="text/javascript" src="javascripts/quiet-emscripten.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background: inherit; padding: 25px 0">
+   <div class="container-fluid" style="padding: 0; margin: 0;">
+    <div class="col-md-4 col-sm-12">
+      <header>
+        <h1><a href="https://github.com/quiet/quiet-js/">Quiet.js</a></h1>
+        <p style="width: 100%">Transmit and receive data in the browser with sound</p>
+      </header>
+      <section>
+        <h1>
+          <a id="quiet" class="anchor" href="#quiet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quiet Profile Lab</h1>
+
+          <div>
+              <form>
+                  <h3>Presets</h3>
+                  <div class="form-group">
+                      <select class="form-control" id="presets"></select>
+                  </div>
+                  <div class="form-group">
+                      <button id="loadPreset" type="button" class="btn btn-default btn-block">Load From Preset</button>
+                  </div>
+                  <h3>Parameters</h3>
+                  <div class="form-group">
+                      <div class="control-label">
+                              <label style="display: block">Operating Mode</label>
+                      </div>
+                      <div class="radio-inline">
+                          <label>
+                              <input type="radio" name="mode" value="OFDMMode">OFDM
+                          </label>
+                      </div>
+                      <div class="radio-inline">
+                          <label>
+                              <input type="radio" name="mode" value="ModemMode">Modem
+                          </label>
+                      </div>
+                      <div class="radio-inline">
+                          <label>
+                              <input type="radio" name="mode" value="GMSKMode">GMSK
+                          </label>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="centerFrequency">Center Frequency
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="10000" min="100" max="20000" step="25" class="form-control" id="centerFrequency">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="gain">Gain
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0.15" min="0.01" max="0.3" step="0.01" class="form-control" id="gain">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="frameLength">Maximum Frame Length
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="400" min="4" max="15000" step="5" class="form-control" id="frameLength">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="clampFrame">Transmitter Frame Length Behavior
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="clampFrame">
+                                <option value="clamp">Clamp to Single Sample Block</option>
+                                <option selected value="noClamp">Allow Overlap of Multiple Blocks</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="modScheme">Modulation</label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="modScheme">
+                                <option selected value="psk2">Phase Shift Keying 2</option>
+                                <option value="psk4">Phase Shift Keying 4</option>
+                                <option value="psk8">Phase Shift Keying 8</option>
+                                <option value="psk16">Phase Shift Keying 16</option>
+                                <option value="psk32">Phase Shift Keying 32</option>
+                                <option value="psk64">Phase Shift Keying 64</option>
+                                <option value="psk128">Phase Shift Keying 128</option>
+                                <option value="psk256">Phase Shift Keying 256</option>
+                                <option value="dpsk2">Differential Phase Shift Keying 2</option>
+                                <option value="dpsk4">Differential Phase Shift Keying 4</option>
+                                <option value="dpsk8">Differential Phase Shift Keying 8</option>
+                                <option value="dpsk16">Differential Phase Shift Keying 16</option>
+                                <option value="dpsk32">Differential Phase Shift Keying 32</option>
+                                <option value="dpsk64">Differential Phase Shift Keying 64</option>
+                                <option value="dpsk128">Differential Phase Shift Keying 128</option>
+                                <option value="dpsk256">Differential Phase Shift Keying 256</option>
+                                <option value="ask2">Amplitude Shift Keying 2</option>
+                                <option value="ask4">Amplitude Shift Keying 4</option>
+                                <option value="ask8">Amplitude Shift Keying 8</option>
+                                <option value="ask16">Amplitude Shift Keying 16</option>
+                                <option value="ask32">Amplitude Shift Keying 32</option>
+                                <option value="ask64">Amplitude Shift Keying 64</option>
+                                <option value="ask128">Amplitude Shift Keying 128</option>
+                                <option value="ask256">Amplitude Shift Keying 256</option>
+                                <option value="qam4">Quadrature Amplitude Shift Keying 4</option>
+                                <option value="qam8">Quadrature Amplitude Shift Keying 8</option>
+                                <option value="qam16">Quadrature Amplitude Shift Keying 16</option>
+                                <option value="qam32">Quadrature Amplitude Shift Keying 32</option>
+                                <option value="qam64">Quadrature Amplitude Shift Keying 64</option>
+                                <option value="qam128">Quadrature Amplitude Shift Keying 128</option>
+                                <option value="qam256">Quadrature Amplitude Shift Keying 256</option>
+                                <option value="qam512">Quadrature Amplitude Shift Keying 512</option>
+                                <option value="qam1024">Quadrature Amplitude Shift Keying 1024</option>
+                                <option value="apsk4">Amplitude Phase Shift Keying 4</option>
+                                <option value="apsk8">Amplitude Phase Shift Keying 8</option>
+                                <option value="apsk16">Amplitude Phase Shift Keying 16</option>
+                                <option value="apsk32">Amplitude Phase Shift Keying 32</option>
+                                <option value="apsk64">Amplitude Phase Shift Keying 64</option>
+                                <option value="apsk128">Amplitude Phase Shift Keying 128</option>
+                                <option value="apsk256">Amplitude Phase Shift Keying 256</option>
+                                <option value="bpsk">Binary Phase Shift Keying</option>
+                                <option value="qpsk">Quadrature Phase Shift Keying</option>
+                                <option value="ook">On-Off Keying</option>
+                                <option value="sqam32">Square QASK 32</option>
+                                <option value="sqam128">Square QASK 128</option>
+                                <option value="V29">V.29 Constellation</option>
+                                <option value="arb16opt">Optimal QASK 16</option>
+                                <option value="arb32opt">Optimal QASK 32</option>
+                                <option value="arb64opt">Optimal QASK 64</option>
+                                <option value="arb128opt">Optimal QASK 128</option>
+                                <option value="arb256opt">Optimal QASK 256</option>
+                                <option value="arb64vt">Virginia Tech logo</option>
+                                <option value="arb64ui">UIllinois logo</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="checksumScheme">Checksum</label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="checksumScheme">
+                                <option selected value="none">None</option>
+                                <option value="checksum">Checksum</option>
+                                <option value="crc8">CRC8</option>
+                                <option value="crc16">CRC16</option>
+                                <option value="crc24">CRC24</option>
+                                <option value="crc32">CRC32</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="innerFecScheme">Inner FEC</label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="innerFecScheme">
+                                <option selected value="none">None</option>
+                                <option value="rep3">Repeat 3</option>
+                                <option value="rep5">Repeat 5</option>
+                                <option value="h74">Hamming 7,4</option>
+                                <option value="h84">Hamming 8,4</option>
+                                <option value="h128">Hamming 12,8</option>
+                                <option value="g2412">Golay 24,12</option>
+                                <option value="secded2216">SECDED 22,16</option>
+                                <option value="secded3932">SECDED 39,32</option>
+                                <option value="secded7264">SECDED 72,64</option>
+                                <option value="v27">Convolutional 1/2,7</option>
+                                <option value="v29">Convolutional 1/2,9</option>
+                                <option value="v39">Convolutional 1/3,9</option>
+                                <option value="v615">Convolutional 1/6,15</option>
+                                <option value="v27p23">Convolutional 2/3,7</option>
+                                <option value="v27p34">Convolutional 3/4,7</option>
+                                <option value="v27p45">Convolutional 4/5,7</option>
+                                <option value="v27p56">Convolutional 5/6,7</option>
+                                <option value="v27p67">Convolutional 6/7,7</option>
+                                <option value="v27p78">Convolutional 7/8,7</option>
+                                <option value="v29p23">Convolutional 2/3,9</option>
+                                <option value="v29p34">Convolutional 3/4,9</option>
+                                <option value="v29p45">Convolutional 4/5,9</option>
+                                <option value="v29p56">Convolutional 5/6,9</option>
+                                <option value="v29p67">Convolutional 6/7,9</option>
+                                <option value="v29p78">Convolutional 7/8,9</option>
+                                <option value="rs8">Reed-Solomon 223/255</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="outerFecScheme">Outer FEC</label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="outerFecScheme">
+                                <option selected value="none">None</option>
+                                <option value="rep3">Repeat 3</option>
+                                <option value="rep5">Repeat 5</option>
+                                <option value="h74">Hamming 7,4</option>
+                                <option value="h84">Hamming 8,4</option>
+                                <option value="h128">Hamming 12,8</option>
+                                <option value="g2412">Golay 24,12</option>
+                                <option value="secded2216">SECDED 22,16</option>
+                                <option value="secded3932">SECDED 39,32</option>
+                                <option value="secded7264">SECDED 72,64</option>
+                                <option value="v27">Convolutional 1/2,7</option>
+                                <option value="v29">Convolutional 1/2,9</option>
+                                <option value="v39">Convolutional 1/3,9</option>
+                                <option value="v615">Convolutional 1/6,15</option>
+                                <option value="v27p23">Convolutional 2/3,7</option>
+                                <option value="v27p34">Convolutional 3/4,7</option>
+                                <option value="v27p45">Convolutional 4/5,7</option>
+                                <option value="v27p56">Convolutional 5/6,7</option>
+                                <option value="v27p67">Convolutional 6/7,7</option>
+                                <option value="v27p78">Convolutional 7/8,7</option>
+                                <option value="v29p23">Convolutional 2/3,9</option>
+                                <option value="v29p34">Convolutional 3/4,9</option>
+                                <option value="v29p45">Convolutional 4/5,9</option>
+                                <option value="v29p56">Convolutional 5/6,9</option>
+                                <option value="v29p67">Convolutional 6/7,9</option>
+                                <option value="v29p78">Convolutional 7/8,9</option>
+                                <option value="rs8">Reed-Solomon 223/255</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="dcFilterAlpha">DC Filter Alpha
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0.15" min="0.01" max="0.3" step="0.01" class="form-control" id="dcFilterAlpha">
+                          </div>
+                      </div>
+                  </div>
+                  <h3>Interpolation/Decimation</h3>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="interpolationShape">Filter Shape
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <select class="form-control" id="interpolationShape">
+                                <option selected value="kaiser">Kaiser</option>
+                                <option value="pm">Parks-McClellan</option>
+                                <option value="rcos">Raised Cosine</option>
+                                <option value="fexp">Flipped Exponential (Nyquist)</option>
+                                <option value="fsech">Flipped Hyperbolic Secant (Nyquist)</option>
+                                <option value="farcsech">Flipped Arc-Hyperbolic Secant (Nyquist)</option>
+                                <option value="arkaiser">Root-Nyquist Kaiser (Approx)</option>
+                                <option value="rkaiser">Root-Nyquist Kaiser</option>
+                                <option value="rrcos">Root Raised Cosine</option>
+                                <option value="gmsk">GMSK</option>
+                                <option value="rfexp">Flipped Exponential (root-Nyquist)</option>
+                                <option value="rfsech">Flipped Hyperbolic Secant (root-Nyquist)</option>
+                                <option value="rfarcsech">Flipped Arc-Hyperbolic Secant (root-Nyquist)</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="interpolationSamplesPerSymbol">Samples Per Symbol
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="2" min="1" max="64" step="1" class="form-control" id="interpolationSamplesPerSymbol">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="interpolationSymbolDelay">Symbol Delay
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="4" min="1" max="64" step="1" class="form-control" id="interpolationSymbolDelay">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="interpolationExcessBandwidth">Excess Bandwidth (Beta)
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0.35" min="0.01" max="1.00" step="0.01" class="form-control" id="interpolationExcessBandwidth">
+                          </div>
+                      </div>
+                  </div>
+                  <h3>OFDM</h3>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="numSubcarriers">Number of subcarriers
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="128" min="32" max="256" step="8" class="form-control" id="numSubcarriers">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="cyclicPrefixLength">Cyclic Prefix Length
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="16" min="8" max="256" step="4" class="form-control" id="cyclicPrefixLength">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="taperLength">Intersymbol Taper Length
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="4" min="2" max="64" step="2" class="form-control" id="taperLength">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="leftBand">Extra leftside guard subcarriers
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0" min="0" max="16" step="1" class="form-control" id="leftBand">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="rightBand">Extra rightside guard subcarriers
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0" min="0" max="16" step="1" class="form-control" id="rightBand">
+                          </div>
+                      </div>
+                  </div>
+                  <h3>Resampler</h3>
+                  <p>This applies only for sample rates that are not 44.1kHz</p>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="resamplerDelay">Symbol Delay
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="13" min="1" max="30" step="1" class="form-control" id="resamplerDelay">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="resamplerBandwidth">Filter Bandwidth
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="0.35" min="0.01" max="1.00" step="0.01" class="form-control" id="resamplerBandwidth">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="resamplerAttenuation">Sidelobe Attenuation
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="60" min="10" max="90" step="1" class="form-control" id="resamplerAttenuation">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div>
+                          <div class="control-label">
+                              <label style="display: block" for="resamplerFilterBankSize">Filter Bank Size
+                              </label>
+                          </div>
+                          <div class="alert alert-danger hidden">Sorry, it looks like this value is invalid. Please try another value.</div>
+                          <div>
+                              <input type="number" value="64" min="4" max="256" step="1" class="form-control" id="resamplerFilterBankSize">
+                          </div>
+                      </div>
+                  </div>
+              </form>
+          </div>
+          <hr>
+          <h3>Link to this profile</h3>
+          <p><a style="word-wrap: break-word;" id="quiet-short-profile-link" href=""></a></p>
+          <hr>
+          <h3>quiet-profiles.json format</h3>
+          <div class="form-group">
+              <div class="alert alert-danger hidden">Sorry, it looks like this profile is invalid.</div>
+              <textarea class="form-control" autocorrect="false" autocapitalize="false" autocomplete="false" spellcheck="false" id="quiet-profiles-json" rows="34" style="resize: none; font-family: monospace; white-space: pre;"></textarea>
+          </div>
+          <div class="form-group">
+              <button id="loadJSONProfile" type="button" class="btn btn-default btn-block">Load Profile</button>
+          </div>
+      </section>
+    </div>
+    <div class="col-md-8 col-sm-12 instrument-panel">
+        <div class="wrapper" style="width: 100%; border-radius: 8px;">
+            <div class="alert alert-danger hidden" data-quiet-lab-warning></div>
+            <div data-quiet-lab-paused>
+                <button data-quiet-lab-start-button type="button" class="btn btn-default btn-block btn-success">Start Lab</button>
+                <section>
+                This will start the transmitter, which plays sound. Please turn down your volume to 20% before starting. If you are wearing headphones, be sure to either switch to speakers or remove the headphones from your head and set them near your microphone.
+                </section>
+            </div>
+            <div data-quiet-lab-instruments class="hidden">
+                <button data-quiet-lab-stop-button type="button" class="btn btn-default btn-block btn-danger">Stop Lab</button>
+                <div class="container-fluid" style="padding: 10px 0">
+                    <div class="col-sm-6" style="padding-left: 5px; padding-right: 5px;">
+                        <div style="height: 275px; width: 285px; margin: 0 auto; position: relative;" data-quiet-lab-fft-container>
+                            <canvas style="z-index: 1; position: absolute; left: 0px; top: 0px; width: 285px; height: 275px;" data-quiet-lab-fft-axes width="285" height="275"></canvas>
+                            <canvas style="z-index: 2; position: absolute; left: 29px; top: 0px; width: 256px; height: 256px;" data-quiet-lab-fft width="256" height="256"></canvas>
+                        </div>
+                        <div class="hidden" style="height: 275px; width: 285px; margin: 0 auto; position: relative;" data-quiet-lab-waveform-container>
+                            <canvas style="z-index: 1; position: absolute; left: 0px; top: 0px; width: 285px; height: 275px;" data-quiet-lab-waveform-axes width="285" height="275"></canvas>
+                            <canvas style="z-index: 2; position: absolute; left: 29px; top: 0px; width: 256px; height: 256px;" data-quiet-lab-waveform width="256" height="256"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="padding-left: 5px; padding-right: 5px;">
+                        <div style="height: 256px; width: 256px; margin: 0 auto; position: relative;" data-quiet-lab-constellation-container>
+                            <canvas style="z-index: 1; position: absolute; left: 0px; top: 0px; width: 256px; height: 256px;" data-quiet-lab-constellation-axes width="256" height="256"></canvas>
+                            <canvas style="z-index: 2; position: absolute; left: 0px; top: 0px; width: 256px; height: 256px;" data-quiet-lab-constellation width="256" height="256"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div data-quiet-lab-show-waveform>
+                    <button type="button" class="btn btn-default btn-block">Show Waveform</button>
+                </div>
+                <div data-quiet-lab-show-spectrum class="hidden">
+                    <button type="button" class="btn btn-default btn-block">Show Spectrum</button>
+                </div>
+                <div data-quiet-lab-stop-graphs>
+                    <button type="button" class="btn btn-default btn-block">Stop Graphs</button>
+                </div>
+                <div data-quiet-lab-run-graphs class="hidden">
+                    <button type="button" class="btn btn-default btn-block">Run Graphs</button>
+                </div>
+                <section class="container-fluid">
+                    <div class="col-md-6 col-lg-3">Frames Received:</div>
+                    <div class="col-md-6 col-lg-3" data-quiet-lab-frames-received>---</div>
+                    <div class="col-md-6 col-lg-3">Frames Lost:</div>
+                    <div class="col-md-6 col-lg-3" data-quiet-lab-frames-lost>---</div>
+                    <div class="col-md-6 col-lg-3">Transfer Rate:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-transfer-rate>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">bps</div>
+                    <div class="col-md-6 col-lg-3">Bit Error Ratio:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-bit-error-ratio>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">%</div>
+                    <div class="col-md-6 col-lg-3">Total Received:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-total-received>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">bytes</div>
+                    <div class="col-md-6 col-lg-3">Total Loss:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-total-loss>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">%</div>
+                    <div class="col-md-6 col-lg-3">Received Strength:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-rssi>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">dB</div>
+                    <div class="col-md-6 col-lg-3">Error Vector:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-evm>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">dB</div>
+                    <div class="col-md-6 col-lg-3">Sample Rate:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-sample-rate>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">Hz</div>
+                    <div class="col-md-6 col-lg-3">Frame Length:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-frame-length>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">bytes</div>
+                    <div class="col-md-6 col-lg-3">Sample Block:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-sample-block-samples>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">samples</div>
+                    <div class="col-md-6 col-lg-3">Sample Block:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-sample-block-ms>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">ms</div>
+                    <div class="col-md-6 col-lg-3">Block Encode Time:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-avg-encode-time>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">ms</div>
+                    <div class="col-md-6 col-lg-3">Block Decode Time:</div>
+                    <div class="col-xs-8 col-md-4 col-lg-2" data-quiet-lab-avg-decode-time>---</div>
+                    <div class="col-xs-4 col-md-2 col-lg-1">ms</div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+  </div>
+    <footer>
+      <p><a href="https://github.com/quiet/quiet-js">Quiet.js</a> transmits data from your browser with Web Audio. It is a binding to <a href="https://github.com/quiet/quiet">libquiet</a>, compiled with <a href="https://github.com/kripken/emscripten">emscripten</a>. Quiet is powered by <a href="https://github.com/jgaeddert/liquid-dsp">liquid dsp</a>, by Joseph Gaeddert, and by <a href="http://www.ka9q.net/code/fec/">libfec</a>, by Phil Karn. Profile system built with <a href="http://www.digip.org/jansson/">libjansson</a>. Quiet has no affiliation with any university.</p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+  </body>
+</html>
