@@ -475,7 +475,7 @@ var QuietLab = (function() {
         jsonBlock.value = JSON.stringify(profile, null, 2);
         onJSONProfileUpdate();
         var shortened = shortener.shorten();
-        var link = "https://quiet.github.io/quiet-js/lab.html?profile=" + shortened;
+        var link = "https://quiet.github.io/quiet-profile-lab/?profile=" + shortened;
         shortBlockLink.href = link;
         shortBlockLink.textContent = link;
     };
