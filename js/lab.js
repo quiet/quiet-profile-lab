@@ -1218,7 +1218,7 @@ var QuietLab = (function() {
         var fetch = new Promise(function(resolve, reject) {
             var xhr = new XMLHttpRequest();
             xhr.overrideMimeType("application/json");
-            xhr.open("GET", "javascripts/quiet-profiles.json", true);
+            xhr.open("GET", "js/quiet-profiles.json", true);
             xhr.onload = function() {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(this.responseText);
